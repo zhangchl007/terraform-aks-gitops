@@ -6,7 +6,7 @@ resource "random_pet" "rg" {
 }
 
 locals {
-  appgw_name = "${replace(random_pet.rg.id, "-", "")}appgw"
+  appgw_name    = "${replace(random_pet.rg.id, "-", "")}appgw"
   kubefile_name = "${var.env_prefix}-kubeconfig"
 }
 resource "azurerm_resource_group" "kube" {
@@ -18,12 +18,12 @@ resource "azurerm_resource_group" "kube" {
 }
 
 resource "azurerm_kubernetes_cluster" "k8s" {
-  name                    = var.cluster_name
-  location                = var.location
-  kubernetes_version      = data.azurerm_kubernetes_service_versions.current.latest_version
-  resource_group_name     = azurerm_resource_group.kube.name
-  dns_prefix              = random_pet.rg.id
-  
+  name                = var.cluster_name
+  location            = var.location
+  kubernetes_version  = data.azurerm_kubernetes_service_versions.current.latest_version
+  resource_group_name = azurerm_resource_group.kube.name
+  dns_prefix          = random_pet.rg.id
+
   private_cluster_enabled = false
   azure_policy_enabled    = false
 
@@ -34,7 +34,7 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     vm_size        = var.nodepool_vm_size
     vnet_subnet_id = var.subnet_ids["node-subnet"]
     pod_subnet_id  = var.subnet_ids["pod-subnet"]
-    
+
   }
 
   oidc_issuer_enabled       = true
@@ -42,8 +42,9 @@ resource "azurerm_kubernetes_cluster" "k8s" {
 
   # Add app-routing configuration
   web_app_routing {
-    # Optional DNS zone integration - uncomment if needed
-    # dns_zone_id = azurerm_dns_zone.example.id
+    # Required: List of DNS zone resource IDs for web app routing
+
+    dns_zone_ids = []
   }
 
   ingress_application_gateway {
@@ -73,17 +74,17 @@ resource "azurerm_kubernetes_cluster" "k8s" {
     }
   }
 
-  depends_on = [ azurerm_user_assigned_identity.aks ]
+  depends_on = [azurerm_user_assigned_identity.aks]
 
 }
 
-resource "azurerm_kubernetes_cluster_node_pool" "spotnodepool"{
+resource "azurerm_kubernetes_cluster_node_pool" "spotnodepool" {
 
-  name = "spotnodepool"
+  name                  = "spotnodepool"
   kubernetes_cluster_id = azurerm_kubernetes_cluster.k8s.id
-  vm_size = var.nodepool_vm_size
-  os_sku  = "AzureLinux"
-  node_count = 3
+  vm_size               = var.nodepool_vm_size
+  os_sku                = "AzureLinux"
+  node_count            = 2
   #priority              = "Spot"
   #eviction_policy       = "Delete"
   #spot_max_price        = 0.2 # note: this is the "maximum" price
@@ -97,14 +98,14 @@ resource "azurerm_kubernetes_cluster_node_pool" "spotnodepool"{
   #os_type = "Linux"
   vnet_subnet_id = var.subnet_ids["node-subnet"]
   pod_subnet_id  = var.subnet_ids["pod-subnet"]
-  depends_on = [azurerm_kubernetes_cluster.k8s]
-  mode = "User"
+  depends_on     = [azurerm_kubernetes_cluster.k8s]
+  mode           = "User"
 
 }
 
 resource "null_resource" "wait_for_kubeconfig" {
   provisioner "local-exec" {
-    command = " az account set --subscription ${data.azurerm_subscription.current.subscription_id} && az aks get-credentials --resource-group ${azurerm_resource_group.kube.name} --name ${azurerm_kubernetes_cluster.k8s.name} --overwrite-existing --admin"
+    command     = " az account set --subscription ${data.azurerm_subscription.current.subscription_id} && az aks get-credentials --resource-group ${azurerm_resource_group.kube.name} --name ${azurerm_kubernetes_cluster.k8s.name} --overwrite-existing --admin"
     working_dir = path.module
   }
   depends_on = [azurerm_kubernetes_cluster.k8s]

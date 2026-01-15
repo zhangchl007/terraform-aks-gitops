@@ -1,7 +1,7 @@
 
 
 # the environment variables env_prefix is critical for the different AKS clusters
-env_prefix               = "prod"
+env_prefix               = "main"
 location                 = "Brazil South"
 kube_vnet_name           = "aks-vnet"
 kube_version_prefix      = "1.30"
@@ -9,52 +9,32 @@ kube_resource_group_name = "argocd-istio-rg"
 cluster_name             = "gitops-aks"
 nodepool_nodes_count     = 2
 nodepool_vm_size         = "Standard_D4as_v5"
-network_dns_service_ip   = "178.52.0.10"
-network_service_cidr     = "178.52.0.0/16"
+network_dns_service_ip   = "178.55.0.10"
+network_service_cidr     = "178.55.0.0/16"
 acr_name                 = "devdevaphidacr"
 acr_resource_group       = "dev-argocd-istio-rg"
-address_space            = ["10.8.0.0/16"] # Changed from string to list of strings
+address_space            = ["10.5.0.0/16"] # Changed from string to list of strings
 username                 = "azureuser"
 ssh_public_key           = "~/.ssh/id_rsa.pub"
 subnets = [
   {
     name             = "node-subnet"
-    address_prefixes = ["10.8.0.0/24"]
+    address_prefixes = ["10.5.0.0/20"]
     delegation       = ""
   },
   {
     name             = "pod-subnet"
-    address_prefixes = ["10.8.1.0/24"]
+    address_prefixes = ["10.5.16.0/20"]
     delegation       = "Microsoft.ContainerService/managedClusters"
   },
   {
     name             = "appgw-subnet"
-    address_prefixes = ["10.8.2.0/24"]
+    address_prefixes = ["10.5.32.0/24"]
     delegation       = ""
   },
   {
     name             = "ingress-subnet"
-    address_prefixes = ["10.8.3.0/24"]
-    delegation       = "Microsoft.ServiceNetworking/trafficControllers"
-  },
-  {
-    name             = "node-subnet1"
-    address_prefixes = ["10.8.64.0/20"]
-    delegation       = ""
-  },
-  {
-    name             = "pod-subnet1"
-    address_prefixes = ["10.8.80.0/20"]
-    delegation       = "Microsoft.ContainerService/managedClusters"
-  },
-  {
-    name             = "appgw-subnet1"
-    address_prefixes = ["10.8.96.0/24"]
-    delegation       = ""
-  },
-  {
-    name             = "ingress-subnet1"
-    address_prefixes = ["10.8.112.0/24"]
+    address_prefixes = ["10.5.33.0/24"]
     delegation       = "Microsoft.ServiceNetworking/trafficControllers"
   }
 

@@ -1,20 +1,25 @@
 resource "kubernetes_namespace" "argocd" {
-  
+
   metadata {
     name = var.argocd_namespace
   }
 }
 resource "helm_release" "argocd" {
-  name       =  var.argocd_name
+  name       = var.argocd_name
   repository = var.argocd_repository
   chart      = var.argocd_chart
   version    = var.argocd_version
 
   namespace = kubernetes_namespace.argocd.metadata[0].name
 
-  timeout = 900
+  # Enable upgrade functionality
+  force_update    = true
+  cleanup_on_fail = true
+  atomic          = true
+  timeout         = 900
+  wait            = true
 
-    values = [<<EOF
+  values = [<<EOF
 server:
   extraArgs:
     - --insecure

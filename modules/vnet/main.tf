@@ -39,4 +39,17 @@ resource "azurerm_subnet" "subnet" {
       }
     }
   }
+  dynamic "delegation" {
+    for_each = each.value.delegation == "Microsoft.DBforMySQL/flexibleServers" ? [1] : []
+    content {
+      name = "mysql_flexible_servers"
+      service_delegation {
+        name = "Microsoft.DBforMySQL/flexibleServers"
+        actions = [
+          "Microsoft.Network/virtualNetworks/subnets/join/action",
+          "Microsoft.Network/virtualNetworks/subnets/prepareNetworkPolicies/action",
+        ]
+      }
+    }
+  }
 }

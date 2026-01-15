@@ -14,7 +14,7 @@ resource "azurerm_role_assignment" "aks_network" {
 resource "azurerm_role_assignment" "aks_appgw_subnet" {
   principal_id         = azurerm_kubernetes_cluster.k8s.ingress_application_gateway[0].ingress_application_gateway_identity[0].object_id
   role_definition_name = "Network Contributor"
-  scope                = var.subnet_ids["appgw-subnet"]  # Use subnet ID, not name
+  scope                = var.subnet_ids["appgw-subnet"] # Use subnet ID, not name
 }
 
 # Assign AcrPull role to the AKS cluster identity on the ACR
