@@ -8,6 +8,6 @@ provider "azurerm" {
 
 
   # use currect login credentials
-  use_cli = true
-
+   use_cli = true
+  
 }

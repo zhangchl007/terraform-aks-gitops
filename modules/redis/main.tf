@@ -6,16 +6,15 @@ terraform {
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = "~> 3.115.0"
     }
   }
 }
 
 locals {
-  redis_enterprise_api_version = "2024-09-01-preview"
-  prefix                       = var.env_prefix
-  redis_name                   = lower(replace("${local.prefix}-${var.redis_name}", "_", "-"))
-
+  redis_enterprise_api_version = "2025-04-01"
+  redis_name                   = lower(replace("${var.env_prefix}-${var.redis_name}", "_", "-"))
+  
 }
 
 
