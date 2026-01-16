@@ -27,8 +27,8 @@ resource "azurerm_private_dns_zone" "mysql" {
 
 # Extract VNET ID from any subnet
 locals {
-  #vnet_id = regex("^(.+)/subnets/.+$", var.subnet_ids[local.mysql_subnet_key])[0]
-  vnet_id = regex("^(.+)/subnets/.+$", var.subnet_ids["mysql-subnet"])[0]
+  vnet_id = regex("^(.+)/subnets/.+$", var.subnet_ids[local.mysql_subnet_key])[0]
+  
 }
 
 # Virtual network link
@@ -70,6 +70,7 @@ resource "azurerm_mysql_flexible_server" "mysql" {
 
   delegated_subnet_id = var.subnet_ids[local.mysql_subnet_key]
   private_dns_zone_id = azurerm_private_dns_zone.mysql.id
+  depends_on = [azurerm_private_dns_zone_virtual_network_link.mysql]
 
   tags = local.tags
 }
