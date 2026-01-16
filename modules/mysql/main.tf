@@ -84,17 +84,18 @@ resource "azurerm_mysql_flexible_database" "appdb" {
   collation           = "utf8mb4_unicode_ci"
 }
 
-# Private endpoint (uses non-delegated privateendpoint-subnet)
-resource "azurerm_private_endpoint" "mysql" {
-  name                = "${local.mysql_server_name}-pe"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  subnet_id           = var.subnet_ids[local.privateendpoint_subnet_key]
-
-  private_service_connection {
-    name                           = "${local.mysql_server_name}-psc"
-    private_connection_resource_id = azurerm_mysql_flexible_server.mysql.id
-    subresource_names              = ["mysqlServer"]
-    is_manual_connection           = false
-  }
-}
+## Private endpoint (uses non-delegated privateendpoint-subnet)
+#resource "azurerm_private_endpoint" "mysql" {
+#  name                = "${local.mysql_server_name}-pe"
+#  location            = var.location
+#  resource_group_name = var.resource_group_name
+#  subnet_id           = var.subnet_ids[local.privateendpoint_subnet_key]
+#
+#  private_service_connection {
+#    name                           = "${local.mysql_server_name}-psc"
+#    private_connection_resource_id = azurerm_mysql_flexible_server.mysql.id
+#    subresource_names              = ["mysqlServer"]
+#    is_manual_connection           = false
+#  }
+#}
+#
